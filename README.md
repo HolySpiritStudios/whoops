@@ -18,7 +18,7 @@ Whoops hooks into PSReadLine's key handlers. When you recall a blocked command f
 whoops! Not executable from history.
 
   git reset --hard HEAD~3
-  Destroys uncommitted work permanently [critical]
+  Can destroy uncommited work nodes and orphan blobs (2 week lifespan with git gc) [critical]
 ```
 
 Manually typed commands always pass through -- the guard only blocks unedited history recall.
@@ -27,7 +27,7 @@ Manually typed commands always pass through -- the guard only blocks unedited hi
 
 | Pattern | Severity | Reason |
 |---------|----------|--------|
-| `git reset --hard` | critical | Destroys uncommitted work permanently |
+| `git reset --hard` | critical | Can destroy uncommited work nodes and orphan blobs (2 week lifespan with git gc) |
 
 ## Managing the Blocklist
 
@@ -39,7 +39,7 @@ Edit `~/.whoops/whoops-blocklist.json` directly:
   "blocked_commands": [
     {
       "pattern": "git reset --hard",
-      "reason": "Destroys uncommitted work permanently",
+      "reason": "Can destroy uncommited work nodes and orphan blobs (2 week lifespan with git gc)",
       "added_at": "2026-03-07T00:00:00Z",
       "severity": "critical"
     },
