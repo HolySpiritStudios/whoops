@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "blocked_commands": [
+    {
+      "pattern": "git reset --hard",
+      "reason": "Destroys uncommitted work permanently",
+      "added_at": "2026-03-07T00:00:00Z",
+      "severity": "critical"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>whoops</id>
+    <version>1.0.0</version>
+    <title>Whoops</title>
+    <authors>Holy Spirit Studios</authors>
+    <projectUrl>https://github.com/HolySpiritStudios/whoops</projectUrl>
+    <licenseUrl>https://github.com/HolySpiritStudios/whoops/blob/main/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <tags>powershell terminal safety git history guard psreadline</tags>
+    <summary>Guards against accidental re-execution of dangerous terminal commands from history.</summary>
+    <description><![CDATA[Ever scrolled through your terminal history and accidentally hit Enter on `git reset --hard`? Whoops prevents that.
+
+Whoops intercepts dangerous commands recalled from history via PSReadLine. When you arrow-up onto a blocked command and press Enter, it's rejected. Manually typed commands always pass through.
+
+Features:
+- Blocks history recall of dangerous commands (Up/Down, Ctrl+R, F8)
+- Manually typed commands are never blocked
+- Configurable JSON blocklist at ~/.whoops/whoops-blocklist.json
+- Ships with git reset --hard blocked by default
+- ~15ms overhead per interactive session, zero for automation
+]]></description>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+    <file src="LICENSE" target="tools\LICENSE.txt" />
+  </files>
+</package>
