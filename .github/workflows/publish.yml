@@ -1,0 +1,71 @@
+name: Publish to Chocolatey
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Pester
+        shell: powershell
+        run: Install-Module Pester -Force -SkipPublisherCheck -Scope CurrentUser -RequiredVersion 5.5.0
+
+      - name: Run tests
+        shell: powershell
+        run: |
+          Import-Module Pester -RequiredVersion 5.5.0
+          $result = Invoke-Pester tests\ -Output Detailed -PassThru
+          if ($result.FailedCount -gt 0) { exit 1 }
+
+  publish:
+    needs: test
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract version from tag
+        id: version
+        shell: powershell
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $ver = $tag -replace '^v', ''
+          Write-Output "version=$ver" >> $env:GITHUB_OUTPUT
+
+      - name: Verify nuspec version matches tag
+        shell: powershell
+        run: |
+          [xml]$nuspec = Get-Content whoops.nuspec
+          $nuspecVer = $nuspec.package.metadata.version
+          $tagVer = "${{ steps.version.outputs.version }}"
+          if ($nuspecVer -ne $tagVer) {
+            Write-Error "Version mismatch: nuspec=$nuspecVer tag=$tagVer"
+            exit 1
+          }
+          Write-Host "Version verified: $nuspecVer"
+
+      - name: Pack
+        shell: powershell
+        run: choco pack whoops.nuspec
+
+      - name: Push to Chocolatey
+        shell: powershell
+        env:
+          CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
+        run: |
+          choco apikey add --source https://push.chocolatey.org/ --key $env:CHOCO_API_KEY
+          choco push whoops.${{ steps.version.outputs.version }}.nupkg --source https://push.chocolatey.org/
+
+      - name: Create GitHub Release
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ github.ref_name }}" `
+            "whoops.${{ steps.version.outputs.version }}.nupkg" `
+            --title "Whoops ${{ steps.version.outputs.version }}" `
+            --generate-notes

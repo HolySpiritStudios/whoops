@@ -85,17 +85,41 @@ Non-interactive sessions (automation, scripts, `-NoProfile`) skip this entirely.
 
 Zero overhead for non-interactive sessions.
 
-## Testing
+## Development
+
+```powershell
+git clone https://github.com/HolySpiritStudios/whoops.git
+cd whoops
+git config core.hooksPath .githooks
+```
+
+The pre-commit hook enforces that `whoops.nuspec` version is bumped whenever `tools/` or `tests/` change.
+
+### Testing
 
 Requires [Pester](https://pester.dev/) v5+.
 
 ```powershell
-# Unit and integration tests
 Import-Module Pester; Invoke-Pester tests\ -Output Detailed
 
-# Performance benchmarks
 powershell -NoProfile -File tests\Whoops.Benchmark.ps1
 ```
+
+### Releasing
+
+Push a version tag to publish to Chocolatey automatically:
+
+```powershell
+# 1. Bump <version> in whoops.nuspec
+# 2. Commit
+# 3. Tag and push
+git tag v1.0.1
+git push origin main --tags
+```
+
+The CI pipeline runs tests, verifies the tag matches the nuspec version, packs, pushes to Chocolatey, and creates a GitHub Release.
+
+Requires a `CHOCO_API_KEY` repository secret.
 
 ## License
 

@@ -1,0 +1,32 @@
+#!/bin/sh
+# Pre-commit hook: ensures whoops.nuspec version was bumped when tools/ or tests/ change.
+
+CODE_CHANGED=$(git diff --cached --name-only | grep -E '^(tools/|tests/|whoops\.nuspec)')
+
+if [ -z "$CODE_CHANGED" ]; then
+    exit 0
+fi
+
+NUSPEC_CHANGED=$(git diff --cached --name-only | grep -E '^whoops\.nuspec$')
+
+if [ -z "$NUSPEC_CHANGED" ]; then
+    echo ""
+    echo "  [whoops] You changed tools/ or tests/ but did not update whoops.nuspec."
+    echo "  Bump the <version> in whoops.nuspec before committing."
+    echo ""
+    exit 1
+fi
+
+STAGED_VER=$(git show :whoops.nuspec | grep '<version>' | sed 's/.*<version>//;s/<\/version>.*//' | tr -d '[:space:]')
+PREV_VER=$(git show HEAD:whoops.nuspec 2>/dev/null | grep '<version>' | sed 's/.*<version>//;s/<\/version>.*//' | tr -d '[:space:]')
+
+if [ -n "$PREV_VER" ] && [ "$STAGED_VER" = "$PREV_VER" ]; then
+    echo ""
+    echo "  [whoops] whoops.nuspec is staged but version is still $STAGED_VER."
+    echo "  Bump the <version> before committing."
+    echo ""
+    exit 1
+fi
+
+echo "  [whoops] Version: $STAGED_VER"
+exit 0
