@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
     <id>whoops</id>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <title>Whoops</title>
     <authors>Holy Spirit Studios</authors>
     <projectUrl>https://github.com/HolySpiritStudios/whoops</projectUrl>

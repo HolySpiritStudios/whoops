@@ -6,6 +6,12 @@
       "reason": "Can destroy uncommited work nodes and orphan blobs (2 week lifespan with git gc)",
       "added_at": "2026-03-07T00:00:00Z",
       "severity": "critical"
+    },
+    {
+      "pattern": "git push --force",
+      "reason": "Can overwrite remote history and destroy other contributors' work permanently",
+      "added_at": "2026-03-07T00:00:00Z",
+      "severity": "critical"
     }
   ]
 }
