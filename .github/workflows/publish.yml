@@ -6,8 +6,14 @@ on:
       - "v*"
 
 jobs:
+  runner-plan:
+    uses: HolySpiritStudios/holy-github-actions/.github/workflows/runner-plan.yml@main
+    with:
+      profile: windows
+
   test:
-    runs-on: windows-latest
+    needs: runner-plan
+    runs-on: ${{ fromJSON(needs.runner-plan.outputs.runs-on) }}
     steps:
       - uses: actions/checkout@v4
 
@@ -23,8 +29,8 @@ jobs:
           if ($result.FailedCount -gt 0) { exit 1 }
 
   publish:
-    needs: test
-    runs-on: windows-latest
+    needs: [test, runner-plan]
+    runs-on: ${{ fromJSON(needs.runner-plan.outputs.runs-on) }}
     permissions:
       contents: write
     steps:
