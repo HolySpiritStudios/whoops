@@ -9,6 +9,10 @@ on:
 
 jobs:
   runner-plan:
+    permissions:
+      contents: read
+      actions: read
+      packages: read
     uses: HolySpiritStudios/holy-github-actions/.github/workflows/runner-plan.yml@main
     with:
       profile: standard
